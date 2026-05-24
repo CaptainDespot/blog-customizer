@@ -37,8 +37,8 @@ export const ArticleParamsForm = ({
 	const sidebarRef = useRef<HTMLElement>(null);
 	const arrowButtonRef = useRef<HTMLDivElement>(null);
 
-	// Используем хук с флагом isMenuOpen и списком элементов, клики по которым не закрывают сайдбар
-	useClickOutsideAndEscape(sidebarRef, () => setIsMenuOpen(false), isMenuOpen);
+	// Передаем оба рефа в хук, чтобы клик по стрелке не считался кликом «наружи»
+useClickOutsideAndEscape(sidebarRef, () => setIsMenuOpen(false), isMenuOpen, [arrowButtonRef]);
 
 	// Временное локальное состояние формы
 	const [localState, setLocalState] = useState<ArticleStateType>(currentState);
@@ -61,13 +61,6 @@ export const ArticleParamsForm = ({
 			option.value !== localState.backgroundColor?.value
 		);
 	};
-
-	// Синхронизируем localState с currentState при его изменении
-	useEffect(() => {
-		if (!isMenuOpen) {
-			setLocalState(currentState);
-		}
-	}, [currentState]);
 
 	// Синхронизируем usedColors с currentState при открытии формы
 	useEffect(() => {
@@ -100,13 +93,8 @@ export const ArticleParamsForm = ({
 
 	// Обработчик клика по кнопке-стрелке
 	const handleArrowClick = () => {
-		const newIsOpen = !isMenuOpen;
-		setIsMenuOpen(newIsOpen);
-		if (newIsOpen) {
-			// При открытии обновляем localState текущим состоянием
-			setLocalState(currentState);
-		}
-	};
+    setIsMenuOpen((prev) => !prev);
+};
 
 	return (
 		<>
